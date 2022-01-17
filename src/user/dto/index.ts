@@ -1,1 +1,1 @@
-export {UserRoDto} from './userRo.dto';
+export { UserRoDto } from './userRo.dto';

@@ -6,32 +6,32 @@ import { UserWithRelations } from './user.type';
 
 @Injectable()
 export class UserSerializer extends BaseSerializer<
-  UserWithRelations,
-  UserRoDto
+    UserWithRelations,
+    UserRoDto
 > {
-  public async serialize(
-    user: UserWithRelations,
-    outputType: 'UserRoDto',
-  ): Promise<UserRoDto> {
-    if (outputType === 'UserRoDto') {
-      return new UserRoDto(user);
-    }
-  }
-
-  public async serializePaginated(
-    value: Pagination<UserWithRelations>,
-    outputType: 'UserRoDto',
-  ): Promise<Pagination<UserRoDto>> {
-    let paginated: Pagination<UserRoDto>;
-
-    if (outputType === 'UserRoDto') {
-      paginated = new Pagination<UserRoDto>(
-        value.items.map((address) => new UserRoDto(address)),
-        value.meta,
-        value.links,
-      );
+    public async serialize(
+        user: UserWithRelations,
+        outputType: 'UserRoDto',
+    ): Promise<UserRoDto> {
+        if (outputType === 'UserRoDto') {
+            return new UserRoDto(user);
+        }
     }
 
-    return paginated;
-  }
+    public async serializePaginated(
+        value: Pagination<UserWithRelations>,
+        outputType: 'UserRoDto',
+    ): Promise<Pagination<UserRoDto>> {
+        let paginated: Pagination<UserRoDto>;
+
+        if (outputType === 'UserRoDto') {
+            paginated = new Pagination<UserRoDto>(
+                value.items.map((address) => new UserRoDto(address)),
+                value.meta,
+                value.links,
+            );
+        }
+
+        return paginated;
+    }
 }

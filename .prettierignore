@@ -1,0 +1,4 @@
+**/*.yml
+**/*.yaml
+**/*node_modules*
+prisma

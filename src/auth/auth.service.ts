@@ -1,62 +1,79 @@
-import { BadRequestException, HttpException, HttpStatus, Injectable, Post } from '@nestjs/common';
+import {
+    BadRequestException,
+    HttpException,
+    HttpStatus,
+    Injectable,
+    Post,
+} from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
+import { JwtService } from '@nestjs/jwt';
+
 import { UserService } from '@src/user/user.service';
 import { CreateUserDto } from './dto';
 import { UserSerializer } from '@src/user/user.serializer';
-import * as bcrypt from 'bcrypt';
-import { JwtService } from '@nestjs/jwt';
 import { AppToken } from './auth.type';
 
 @Injectable()
 export class AuthService {
-  constructor(public readonly userService: UserService,
-    private readonly userSerializer: UserSerializer,
-    private readonly jwtService: JwtService ) { }
+    constructor(
+        public readonly userService: UserService,
+        private readonly userSerializer: UserSerializer,
+        private readonly jwtService: JwtService,
+    ) {}
 
-  async getByEmail(email: string) {
-    const user = await this.userService.getOne({
-      where: { emailAddress: email }
-    });
-    if (user)
-      return user;
-    throw new HttpException('User with this email does not exist', HttpStatus.NOT_FOUND);
-  }
-
-  async register(createUser: CreateUserDto) {
-    const userExcists = await this.userService.checkExist({
-        emailAddress: createUser.email
-      });
-    if(userExcists) {
-      throw new BadRequestException("There is already an user with the same email address!");
+    async getByEmail(email: string) {
+        const user = await this.userService.getOne({
+            where: { emailAddress: email },
+        });
+        if (user) return user;
+        throw new HttpException(
+            'User with this email does not exist',
+            HttpStatus.NOT_FOUND,
+        );
     }
 
-    const newUser = await this.userService.add({data: {
-        emailAddress: createUser.email,
-        firstname: createUser.firstname,
-        lastname: createUser.lastname,
-        hashedPassword: bcrypt.hashSync(createUser.password, 10)
-    }});
-    return newUser;
-  }
+    async register(createUser: CreateUserDto) {
+        const userExcists = await this.userService.checkExist({
+            emailAddress: createUser.email,
+        });
+        if (userExcists) {
+            throw new BadRequestException(
+                'There is already an user with the same email address!',
+            );
+        }
 
-  async validateUser(username: string, password: string): Promise<any> {
-    const user = await this.userService.getOne({
-        where: { emailAddress: username }
-    });
-    if (user && await this.verifyPassword(password, user.hashedPassword)) {
-      return this.userSerializer.serialize(user, "UserRoDto");
+        const newUser = await this.userService.add({
+            data: {
+                emailAddress: createUser.email,
+                firstname: createUser.firstname,
+                lastname: createUser.lastname,
+                hashedPassword: bcrypt.hashSync(createUser.password, 10),
+            },
+        });
+        return newUser;
     }
-    return null;
-  }
 
-  async login(user: any): Promise<AppToken> {
-    const payload = { username: user.username, sub: user.userId }; 
-    return {
-      accessToken: this.jwtService.sign(payload)
+    async validateUser(username: string, password: string): Promise<any> {
+        const user = await this.userService.getOne({
+            where: { emailAddress: username },
+        });
+        if (
+            user &&
+            (await this.verifyPassword(password, user.hashedPassword))
+        ) {
+            return this.userSerializer.serialize(user, 'UserRoDto');
+        }
+        return null;
     }
-  }
 
-  private async verifyPassword(password: string, hashedPassword: string) {
-      return await bcrypt.compare(password, hashedPassword);
-  }
+    async login(user: any): Promise<AppToken> {
+        const payload = { username: user.username, sub: user.userId };
+        return {
+            accessToken: this.jwtService.sign(payload),
+        };
+    }
 
+    private async verifyPassword(password: string, hashedPassword: string) {
+        return await bcrypt.compare(password, hashedPassword);
+    }
 }

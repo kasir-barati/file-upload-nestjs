@@ -1,3 +1,3 @@
 const BaseRepositoryMock = (dataSet: any[]) => {
-  return {};
+    return {};
 };

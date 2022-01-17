@@ -7,21 +7,22 @@ import { UserWithRelations } from './user.type';
 
 @Injectable()
 export class UserService extends BaseService<
-  UserWithRelations,
-  Prisma.UserCreateArgs,
-  Prisma.UserUpdateArgs,
-  Prisma.UserUpdateManyArgs,
-  Prisma.UserFindFirstArgs,
-  Prisma.UserFindManyArgs,
-  Prisma.UserDeleteArgs,
-  Prisma.UserDeleteManyArgs>  {
+    UserWithRelations,
+    Prisma.UserCreateArgs,
+    Prisma.UserUpdateArgs,
+    Prisma.UserUpdateManyArgs,
+    Prisma.UserFindFirstArgs,
+    Prisma.UserFindManyArgs,
+    Prisma.UserDeleteArgs,
+    Prisma.UserDeleteManyArgs
+> {
     constructor(
         public prismaService: PrismaService,
         public userRepository: UserPrismaRepository,
-      ) {
+    ) {
         super(userRepository, {
-          NOT_FOUND: 'کاربر وجود ندارد',
-          DUPLICATE: 'کاربر تکراری است',
+            NOT_FOUND: 'کاربر وجود ندارد',
+            DUPLICATE: 'کاربر تکراری است',
         });
-      }
-  }
+    }
+}

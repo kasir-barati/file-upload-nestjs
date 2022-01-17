@@ -5,9 +5,9 @@ import { PrismaModule } from '@src/shared/modules/prisma-management/prisma-manag
 import { UserSerializer } from './user.serializer';
 
 @Module({
-  imports: [PrismaModule],
-  controllers: [],
-  providers: [UserService, UserPrismaRepository, UserSerializer],
-  exports:[UserService, UserSerializer]
+    imports: [PrismaModule],
+    controllers: [],
+    providers: [UserService, UserPrismaRepository, UserSerializer],
+    exports: [UserService, UserSerializer],
 })
 export class UserModule {}

@@ -1,5 +1,5 @@
 export {
-  CustomBaseEntity,
-  CustomTenantBaseEntity,
-  ICustomBaseEntity,
+    CustomBaseEntity,
+    CustomTenantBaseEntity,
+    ICustomBaseEntity,
 } from './base';
