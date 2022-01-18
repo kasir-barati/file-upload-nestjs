@@ -20,7 +20,7 @@ export class AuthController {
     constructor(private readonly authService: AuthService) {}
 
     @UseGuards(LocalAuthGuard)
-    @Get('login')
+    @Post('login')
     async login(@Request() req): Promise<AppToken> {
         return await this.authService.login(req.user);
     }

@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+
 import { UserService } from './user.service';
 import { UserPrismaRepository } from './user.repository';
 import { PrismaModule } from '@src/shared/modules/prisma-management/prisma-management.module';

@@ -1,5 +1,6 @@
 import { Controller, Get, Request, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+
 import { JwtAuthGuard } from '@src/auth/jwt.guard';
 import { UserSerializer } from './user.serializer';
 import { UserService } from './user.service';
@@ -16,7 +17,6 @@ export class AuthController {
     @ApiBearerAuth()
     @Get('profile')
     async register(@Request() req) {
-        console.log(req.user);
         const user = await this.userService.getOneOrFail({
             where: {
                 id: req.user.userId,
