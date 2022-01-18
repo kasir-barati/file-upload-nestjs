@@ -1,9 +1,15 @@
 import { Module } from '@nestjs/common';
+
 import { FilesService } from './files.service';
 import { FilesController } from './files.controller';
+import { PrismaModule } from '@src/shared/modules/prisma-management/prisma-management.module';
+import { FilesPrismaRepository } from './files.repository';
+import { FilesSerializer } from './files.serializer';
 
 @Module({
-  controllers: [FilesController],
-  providers: [FilesService]
+    imports: [PrismaModule],
+    controllers: [FilesController],
+    providers: [FilesService, FilesPrismaRepository, FilesSerializer],
+    exports: [FilesPrismaRepository, FilesSerializer],
 })
 export class FilesModule {}

@@ -1,26 +1,51 @@
-import { Injectable } from '@nestjs/common';
-import { CreateFileDto } from './dto/create-file.dto';
-import { UpdateFileDto } from './dto/update-file.dto';
+import { Inject, Injectable } from '@nestjs/common';
+import { Prisma } from '.prisma/client';
+
+import { BaseService } from '@src/shared/libs/tapsa-crud';
+import { FileWithRelations } from './files.type';
+import { FilesPrismaRepository } from './files.repository';
+import { PrismaService } from '@src/shared/modules/prisma-management/prisma-management.service';
+import { ConfigType } from '@nestjs/config';
+import webAppConfig from '@src/configs/web-app.config';
 
 @Injectable()
-export class FilesService {
-  create(createFileDto: CreateFileDto) {
-    return 'This action adds a new file';
-  }
+export class FilesService extends BaseService<
+    FileWithRelations,
+    Prisma.FileCreateArgs,
+    Prisma.FileUpdateArgs,
+    Prisma.FileUpdateManyArgs,
+    Prisma.FileFindFirstArgs,
+    Prisma.FileFindManyArgs,
+    Prisma.FileDeleteArgs,
+    Prisma.FileDeleteManyArgs
+> {
+    constructor(
+        public prismaService: PrismaService,
+        public fileRepository: FilesPrismaRepository,
+        @Inject(webAppConfig.KEY)
+        private webAppConfigs: ConfigType<typeof webAppConfig>,
+    ) {
+        super(fileRepository, {
+            NOT_FOUND: 'فایل مورد نظر وجود ندارد',
+            DUPLICATE: 'فایل وارد شده تکراری است',
+        });
+    }
+    override add(obj: Prisma.FileCreateArgs): Promise<File> {
+        const mimetype = obj.data.mimetype as string;
 
-  findAll() {
-    return `This action returns all files`;
-  }
+        if (mimetype === 'image/bmp') {
+            obj.data.mimetype = 'imageBmp';
+        } else if (mimetype === 'image/gif') {
+            obj.data.mimetype = 'imageGif';
+        } else if (mimetype === 'image/jpeg') {
+            obj.data.mimetype = 'imageJpeg';
+        } else if (mimetype === 'image/png') {
+            obj.data.mimetype = 'imagePng';
+        } else if (mimetype === 'image/png') {
+            obj.data.mimetype = 'imageSvgXml';
+        }
+        obj.data.url = `${this.webAppConfigs.baseUrl}/${obj.data.url}`;
 
-  findOne(id: number) {
-    return `This action returns a #${id} file`;
-  }
-
-  update(id: number, updateFileDto: UpdateFileDto) {
-    return `This action updates a #${id} file`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} file`;
-  }
+        return super.add(obj);
+    }
 }

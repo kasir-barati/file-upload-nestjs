@@ -14,6 +14,27 @@ model User {
   lastname       String   @db.VarChar(100)
   emailAddress   String   @map("email_address") @unique(map: "email_unique_constraint")
   hashedPassword String   @map("hashed_password")
+  files          File[]
 
   @@map("user")
+}
+
+model File {
+  id        Int      @id @default(autoincrement())
+  url       String   @db.VarChar(500)
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  createdAt DateTime @default(now())
+  mimetype  Mimetype?
+  size      Int?
+
+  @@map("files")
+}
+
+enum Mimetype {
+  imagePng    @map("image/png")
+  imageJpeg   @map("image/jpeg")
+  imageBmp    @map("image/bmp")
+  imageGif    @map("image/gif")
+  imageSvgXml @map("image/svg+xml")
 }

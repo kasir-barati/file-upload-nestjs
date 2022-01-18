@@ -1,0 +1,14 @@
+version: '3.3'
+
+services:
+  nest_assessment_postgres:
+    image: postgres:13
+    container_name: nest_assessment_postgres
+    hostname: nest_assessment_postgres
+    ports: 
+      - ${POSTGRES_EXPOSED_PORT}:5432
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    
